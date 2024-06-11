@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+      <meta charset="UTF-8">
+      <link rel="icon" href="logo.png" type="image/gif" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title src="logo.png" >Home</title>
+      <link rel="stylesheet" href="/styles.css">
+      <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+   </head>
+   <body>
+      <!--Navbar containing the "Home", "Menu", and "Schedule" pages  -->
+      <nav class="navbar navbar-expand-sm navbar-light" style="margin-bottom:-10px !important;">
+         <div class="mx-auto d-sm-flex d-block flex-sm-nowrap">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsExample11" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse text-center" id="navbarsExample11">
+               <ul class="navbar-nav">
+                  <li>
+                     <img id="logo" src="/images/logo.png" width="250" height="auto" >
+                  </li>
+                  <li class="nav-item active">
+                     <a id="hover-underline-animation" style="margin-top:40px !important; font-size:30px !important; color:rgba(91, 192, 235, 1) !important;" class="nav-link" href="/">Home</a>
+                  </li>
+                  <li class="nav-item">
+                     <a id="hover-underline-animation" style="margin-top:40px !important; font-size:30px !important" class="nav-link" href="/menu">Menu</a>
+                  </li>
+                  <li class="nav-item">
+                     <a id="hover-underline-animation" style="margin-top:40px !important; font-size:30px !important" class="nav-link" href="/schedule">Schedule</a>
+                  </li>
+               </ul>
+            </div>
+         </div>
+      </nav>
+      <div class="container">
+      <div class="py-5 text-center">
+         <!--This section is the cart where it shows the bill. The name of the food item and the total price. -->
+         <h2>Checkout</h2>
+         <p class="lead">Please fill out the form below to complete your order</p>
+      </div>
+      <form id="customerForm" method="POST" action="/orderConfirmation" class="needs-validation" novalidate>
+         <div class="row">
+         <div class="col-md-4 order-md-2 mb-4">
+            <h4 class="d-flex justify-content-between align-items-center mb-3">
+               <span class="text-muted">Your cart</span>
+               <span class="badge badge-secondary badge-pill">1</span>
+            </h4>
+            <ul class="list-group mb-3">
+               <li class="list-group-item d-flex justify-content-between lh-condensed">
+                  <div >
+                     <class="my-0">
+                     <label for="bill" style="display:inline-block !important;"></label>
+                     <textarea type="text" name="bill" class="form-control" id="bill" placeholder="" value="<%= item.foodName %>" required readonly><%= item.foodName %></textarea>
+                     <small class="text-muted">Comes in a takeaway plate</small>
+                     </class>
+                  </div>
+                  <span class="text-muted">$<%= item.price %></span>
+               </li>
+               <li class="list-group-item d-flex justify-content-between">
+                  <span>Total (USD)</span>
+                  <strong>$<%= item.price %></strong>
+               </li>
+               <hr class="mb-6">
+
+               <!--When the user clicks on their payment choice, two options will daysplayed in the "orderButton" div. Just a botton or a cashapp qr code and a button. This button will direct them to the order confirmation page.  -->
+               <form id="payment-form">
+               <div id="orderButton">
+                  
+                     
+               </div>
+               </form>
+            </ul>
+         </div>
+            <!--This section is the billign adress where the user fills out their personal information such as their name, email, grade, or advisory  -->
+         <div class="col-md-8 order-md-1">
+            <h4 class="mb-3">Billing address</h4>
+            <div class="row">
+               <div class="col-md-6 mb-3">
+                  <label for="firstName" style="display:inline-block !important;">First name</label>
+                  <input type="text" name="customerFName" class="form-control" id="firstName" placeholder="" value="" required>
+                  <div class="invalid-feedback">
+                     Valid first name is required.
+                  </div>
+               </div>
+               <div class="col-md-6 mb-3">
+                  <label for="lastName">Last name</label>
+                  <input type="text"name="customerLName" class="form-control" id="lastName" placeholder="" value="" required>
+                  <div class="invalid-feedback">
+                     Valid last name is required.
+                  </div>
+               </div>
+            </div>
+            <div class="col-md-8 order-md-1">
+               <div class="row">
+                  <div class="col-md-6 mb-3">
+                     <label for="grade">Grade</label>
+                     <div class="input-group">
+                        <div class="input-group-prepend">
+                        </div>
+                        <input type="text" name="grade"  id="grade" placeholder="" required>
+                        <div class="invalid-feedback" style="width: 100%;">
+                           Your Grade is required.
+                        </div>
+                     </div>
+                  </div>
+                  <div class="col-md-6 mb-3">
+                     <label for="advisory">Advisory</label>
+                     <input type="text" name="advisory"  id="advisory" placeholder="" required>
+                     <div class="invalid-feedback">
+                        Please enter your shipping address.
+                     </div>
+                  </div>
+               </div>
+            </div>
+            <div class="mb-3">
+               <label for="email">School Email <span class="text-muted">(Optional)</span></label>
+               <input type="email" name="email" class="form-control" id="email" placeholder="you@compscihigh.org">
+               <div class="invalid-feedback">
+                  Please enter a valid email address for delivery updates.
+               </div>
+            </div>
+      </form>
+
+            <!--This section allows the user ot choose whether they would want to pay in person or through cashapp. When they have decided their payment button, they will click on the order button.  -->
+      <hr class="mb-6">
+      <div class="row" style="display:inline-block;">
+      <h4 class="mb-6">Payment</h4>
+      <div class="d-block my-6">
+      <div class="form-check w-100 collapsed" data-bs-toggle="collapse" data-bs-target="#collapsePP" aria-expanded="false">
+      <input class="form-check-input" type="radio" name="payment" id="payment1">
+      <label class="form-check-label pt-1" for="payment1">
+      CashApp
+      </label>
+      </div>
+      <div class="form-check w-100 collapsed" data-bs-toggle="collapse" data-bs-target="#collapsePP" aria-expanded="false">
+      <input class="form-check-input" type="radio" name="payment" id="payment2">
+      <label class="form-check-label pt-1" for="payment2">
+      In-Person
+      </label>
+      </div>
+      </div>
+      </div>                                      
+      </div>
+
+
+            
+      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+      <script src="/script.js" defer></script>
+            <script src="/modal.js" defer></script>
+   </body>
+</html>
