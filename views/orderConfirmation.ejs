@@ -5,10 +5,11 @@
   <meta charset="UTF-8">
   <link rel="icon" href="/images/star.png" type="image/gif" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Menu</title>
+  <title>Order Confirmation</title>
   <link rel="stylesheet" href="/styles.css">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
      <link href="https://fonts.googleapis.com/css2?family=Dosis:wght@200..800&family=Lexend:wght@100..900&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
 </head>
 
 <body>
@@ -38,24 +39,67 @@
       </nav>
 
     <!--A thank you page after any product is ordered. They will also recieve a confirmation email that will thank them for their order.-->
+    <svg id="fader">
+        <canvas id="yourConfettiCanvasId"></canvas>
     <br>
     <div class="jumbotron text-center" style="margin-top:150px">
       <h1 class="display-3" id="activityStatus">Thank You!</h1>
       <p class="lead"><strong>Make sure to come by me during lunch period to get your order.</p>
       <hr>
       <p>
-        Having trouble? <a href=mailto:"omolola.ayedun24@compscihigh.org">Contact us</a>
+        Having trouble? <a id="hover-underline-animation" style="color:rgba(91, 192, 235,0.7) !important" href=mailto:"toure.parker25@compscihigh.org">Contact us</a>
       </p>
       <p class="lead">
           <!--The user can click the button to return to the home page.-->
         <a id="rsvp" class="btn btn-primary btn-sm" href="/" role="button">Continue to homepage</a>
       </p>
     </div>
-
-    <script src="node_modules/confetti-js/dist/index.min.js"></script>
+    </svg>
+    
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-          <script src="/public/script.js">
-                </script>
+          <script src="/public/script.js"></script>
+     <script src="/pageFade.js" defer></script>
+    <script>
+        
+        var scalar = 2;
+        var one = confetti.shapeFromText({ text: ['🌯'], scalar });
+        var two = confetti.shapeFromText({ text: ['🍱'], scalar });
+        var three = confetti.shapeFromText({ text: ['🍜'], scalar });
+        var four = confetti.shapeFromText({ text: ['🍲'], scalar });
+        var triangle = confetti.shapeFromPath({ path: 'M31.66,1.38l11.49,3.36c4.48,1.31,9.24,1.31,13.72,0l11.49-3.36c18.51-5.42,35.69,11.76,30.27,30.27l-3.36,11.49c-1.31,4.48-1.31,9.24,0,13.72l3.36,11.49c5.42,18.51-11.76,35.69-30.27,30.27l-11.49-3.36c-4.48-1.31-9.24-1.31-13.72,0l-11.49,3.36C13.15,104.04-4.04,86.85,1.38,68.34l3.36-11.49c1.31-4.48,1.31-9.24,0-13.72L1.38,31.66C-4.04,13.15,13.15-4.04,31.66,1.38z' });
+
+
+        var duration = 5 * 1000;
+        var end = Date.now() + duration;
+        
+        (function frame() {
+          confetti({
+            particleCount: 2,
+            angle: 45,
+            spread: 360,
+            origin: { x: 0 },
+            zIndex: 9999,
+              shapes: [one, two, three, four, triangle],
+                scalar,
+              
+          });
+          confetti({
+            particleCount: 2,
+            angle: 90,
+            spread: 360,
+            origin: { x: 1 },
+              zIndex: 9999,
+                shapes: [one, two, three, four, triangle],
+                  scalar,
+          });
+
+          if (Date.now() < end) {
+            requestAnimationFrame(frame);
+          }
+        }());
+
+        
+    </script>
   
 </body>
 </html>

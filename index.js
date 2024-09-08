@@ -1,3 +1,5 @@
+//import path
+const path = require("path");
 //import express
 const express = require("express");
 //import ejs
@@ -28,7 +30,7 @@ app.use(express.static(__dirname + "/public"));
 
 // Set up the route handler for /home. Send back the home.html file as a static file
 app.get("/", (req, res) => {
-  res.sendFile(__dirname + "/public/home.html");
+  res.status(200).sendFile(__dirname + "/public/home.html");
 });
 
 //create route for /menu
@@ -39,17 +41,23 @@ app.use("/menu", foodMenuRoutes);
 const ordersInfoRoutes = require(__dirname + "/routes/ordersInfoRoutes.js");
 app.use("/orderConfirmation", ordersInfoRoutes);
 
+
 //create route for /adminPage
 app.get("/adminPage", (req, res) => {
-  res.sendFile(__dirname + "/public/addItem.html");
+  res.status(200).sendFile(__dirname + "/public/addItem.html");
 });
 
 
 
 //create route for /schedule
 app.get("/schedule", (req, res) => {
-  res.sendFile(__dirname + "/public/schedule.html");
+  res.status(200).sendFile(__dirname + "/public/schedule.html");
 });
+
+app.use((req,res,next)=>{
+  res.status(404).sendFile(__dirname+"/public/404.html")
+});
+
 
 //server runs on port 3003
 const PORT = process.env.PORT || 3003;

@@ -1,3 +1,5 @@
+//import path
+const path = require("path");
 
 //import mongoose
 const mongoose = require("mongoose");
@@ -40,21 +42,22 @@ const Menu = mongoose.model("Menu", menuSchema);
 router.get("/", (req, res) => {
   Menu.find({})
     .then((items) => {
-      res.render("entres.ejs", { foods: items });
+      console.log(res.status)
+        res.status(200).render("entres.ejs", { foods: items });
     })
-    .catch((err) => {
-      res.status(500).json({ error: "Internal server error" });
-    });
+  .catch((err) => {
+    res.status(500).sendFile(path.resolve(__dirname+'/../public/500.html'))
+  });
 });
 //GET Method routes to /menu/editMenu
 router.get("/editMenu", (req, res) => {
   Menu.find({})
     .then((items) => {
-      res.render("editMenu.ejs", { foods: items });
+      res.status(200).render("editMenu.ejs", { foods: items });
     })
-    .catch((err) => {
-      res.status(500).json({ error: "Internal server error" });
-    });
+  .catch((err) => {
+    res.status(500).sendFile(path.resolve(__dirname+'/../public/500.html'))
+  });
 });
 
 
@@ -65,12 +68,12 @@ let filter={itemNumber:i};
   Menu.findOne(filter)
     .then((item) => {
       console.log(item)
-      res.render("itemInfo.ejs",{item:item});
+      res.status(200).render("itemInfo.ejs",{item:item});
 
     })
-    .catch((err) => {
-      res.status(500).json({ error: "Internal server error" });
-    });
+  .catch((err) => {
+    res.status(500).sendFile(path.resolve(__dirname+'/../public/500.html'))
+  });
 });
 
  //GET Method routes to /menu/*each individual menu items order page that will show the info of that item when being purchased*
@@ -80,12 +83,12 @@ let filter={itemNumber:i};
   Menu.findOne(filter)
     .then((item) => {
       console.log(item)
-      res.render("orderPage.ejs",{item:item});
+      res.status(200).render("orderPage.ejs",{item:item});
 
     })
-    .catch((err) => {
-      res.status(500).json({ error: "Internal server error" });
-    });
+  .catch((err) => {
+    res.status(500).sendFile(path.resolve(__dirname+'/../public/500.html'))
+  });
 });
 
 //POST Method that allows Toure to publish more menu items. Allows him to add a new menu items, and include attributes such as the foodName, allergens, price, itemNumber, description, and imgUrl in the database

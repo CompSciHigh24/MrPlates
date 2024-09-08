@@ -1,15 +1,18 @@
 //import mailjet
-const Mailjet = require('node-mailjet');
+const Mailjet = require("node-mailjet");
 
 //connect Mailjet and give access to public and private key
 const mailjet = Mailjet.apiConnect(
-    process.env.MJ_APIKEY_PUBLIC,
-    process.env.MJ_APIKEY_PRIVATE,
-    {
-      config: {},
-      options: {}
-    } 
+  process.env.MJ_APIKEY_PUBLIC,
+  process.env.MJ_APIKEY_PRIVATE,
+  {
+    config: {},
+    options: {},
+  },
 );
+
+//import path
+const path = require("path");
 
 //import mongoose
 const mongoose = require("mongoose");
@@ -21,11 +24,10 @@ const express = require("express");
 const router = express.Router();
 
 //import body-parser
-const bodyParser = require('body-parser');
+const bodyParser = require("body-parser");
 
 router.use(bodyParser.json()); // for parsing application/json
-router.use(bodyParser.urlencoded({ extended: true })); 
-
+router.use(bodyParser.urlencoded({ extended: true }));
 
 //MongoDB Connection String
 const mongoDBConnectionString =
@@ -37,17 +39,16 @@ mongoose.connect(mongoDBConnectionString).then(() => {
 });
 
 //Orders Schema
-var orderSchema = new mongoose.Schema({
-  customerFName: { type: String},
-  customerLName: { type: String},
-  grade: { type: String},
-  advisory: { type: String },
-  email: { type: String },
-  bill: { type: String },
-},
+var orderSchema = new mongoose.Schema(
+  {
+    customerFName: { type: String },
+    customerLName: { type: String },
+    grade: { type: String },
+    advisory: { type: String },
+    email: { type: String },
+    bill: { type: String },
+  },
   { timestamps: true },
-  
-
 );
 
 //Order Model under orderSchema
@@ -55,19 +56,28 @@ const Order = mongoose.model("Order", orderSchema);
 
 // GET Method routes to /orderConfirmation
 router.get("/", (req, res) => {
-Order.find({})
+  Order.find({})
     .then((order) => {
-      res.render("orderConfirmation.ejs",{order:order});
-
+      console.log("orderPage")
+      res.status(200).render("orderConfirmation.ejs", { order: order });
     })
     .catch((err) => {
-      res.status(500).json({ error: "Internal server error" });
+      res.status(500).sendFile(path.resolve(__dirname + "/../public/500.html"));
     });
 });
 
-
-
-
+// GET Method routes to /orderConfirmation
+router.get("/dashboard", (req, res) => {
+  Order.find({})
+    .sort({ createdAt: -1 })
+    .then((order) => {
+      console.log("dashboard")
+      res.status(200).render("dashboard.ejs", { order: order });
+    })
+    .catch((err) => {
+      res.status(500).sendFile(path.resolve(__dirname + "/../public/500.html"));
+    });
+});
 
 // POST Method to /orderConfirmation
 //User will be sent an email and will be personalized based on the name they input in the text boxes
@@ -81,44 +91,76 @@ router.post("/", (req, res) => {
     bill: req.body.bill,
   })
     .save()
+
     .then(() => {
-      const request = mailjet
-        
-              .post('send', { version: 'v3.1' })
-              .request({
-                Messages: [
-                  {
-                    From: {
-                      Email: 'toure.parker25@compscihigh.org',
-                      Name: 'Mr. Plates'
-                    },
-                    To: [
-                      {
-                        Email: req.body.email,
-                        Name: req.body.customerFName+" "+req.body.customerLName
-                      }
-                    ],
-                    "TemplateID": 6004552,
-                    "TemplateLanguage": true,
-                    "Subject": "Thank you for your order, "+req.body.customerFName+"!",
-                    "Variables": {
-                      "name":req.body.customerFName,
-                      "order":req.body.bill,
-                    }
-                  }
-                ]
-              })
+      const request = mailjet.post("send", { version: "v3.1" }).request({
+        Messages: [
+          {
+            From: {
+              Email: "toure.parker25@compscihigh.org",
+              Name: "Mr. Plates",
+            },
+            To: [
+              {
+                Email: "toure.parker25@compscihigh.org",
+                Name: "Mr. Plates",
+              },
+            ],
+            TemplateID: 6074354,
+            TemplateLanguage: true,
+            Subject: req.body.customerFName+" has bought a plate!",
+            Variables: {
+              name: req.body.customerFName,
+              order: req.body.bill,
+            },
+          },
+        ],
+      });
+    })
+    .then(() => {
+      const request = mailjet.post("send", { version: "v3.1" }).request({
+        Messages: [
+          {
+            From: {
+              Email: "toure.parker25@compscihigh.org",
+              Name: "Mr. Plates",
+            },
+            To: [
+              {
+                Email: req.body.email,
+                Name: req.body.customerFName + " " + req.body.customerLName,
+              },
+            ],
+            TemplateID: 6074361,
+            TemplateLanguage: true,
+            Subject:
+              "Thank you for your order, " + req.body.customerFName + "!",
+            Variables: {
+              name: req.body.customerFName,
+              order: req.body.bill,
+            },
+          },
+        ],
+      });
 
       request
-          .then((result) => {
-              console.log(result.body)
-          })
-          .catch((err) => {
-              console.log(err.statusCode)
-          })
-      res.redirect("/orderConfirmation")
+        .then((result) => {
+          console.log(result.body);
+        })
+        .catch((err) => {
+          console.log(err.statusCode);
+        });
+      res.redirect("/orderConfirmation");
     });
 });
+//DELETE method to remove fulfilled student order
+router.delete('/dashboard/:_id', (req, res) => {
+  const filter = {_id: req.params._id}
 
+  Order.findOneAndDelete(filter)
+  .then((del) => {
+    res.json(del)
+  })
+});
 
 module.exports = router;
